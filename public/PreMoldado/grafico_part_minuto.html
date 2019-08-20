@@ -23,14 +23,14 @@
 
     .main {
       float: left;
-      width: 75%;
+      width: 80%;
       padding: 20px;
     }
 
     .right {
       background-color: #B9D2E1;
       float: left;
-      width: 25%;
+      width: 20%;
       padding: 15px;
       margin-top: 7px;
       text-align: center;
@@ -128,29 +128,51 @@
 
   <div class="w3-cell-middle">
     <div class="main">
-      <h2>Gráficos</h2>
+      <h2>Gráficos de material particulado</h2>
       <div class="w3-panel w3-border w3-round-xlarge">
+
+
+
+
+
+        <p>
+          <div id="curve_chart" style="height:400px;" style="width:100%;"></div>
+        </p>
+
+
+
+        <p>
+          <div class="w3-panel w3-border w3-round-xlarge">
+            <center>Gráfico de material particulado em média por minuto do dia 10/07/2019
+          </div>
+        </p><br>
+
+        <center>
+          <div class="w3-dropdown-hover">
+            <button class="w3-btn w3-white w3-round w3-border w3-border-blue">Gráficos de Material Particulado
+              <b>↓</b></button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+              <a href="grafico_part_minuto.html" class="w3-bar-item w3-button">1 Dia</a>
+              <a href="grafico_part.html" class="w3-bar-item w3-button">Méd. por minuto</a>
+            </div>
+        </center>
         <br>
-     <center> 
-       <h3> Obras e Fábricas </h3><br>
-       <a href="DolceVita/grafico_DolceVita.html">Dolce Vita</a><br>
-       <a href="PreMoldado/grafico_premoldado.html"> Pré-moldado IBTC</a>
-            </center>
-            <br>
-
-
+        <br>
+        <br>
 
       </div>
     </div>
   </div>
+  </div>
   <!-- AQUI COMEÇA A PARTE DA DIREITA DO LAYOUT (NAVEGAÇÃO DO GRÁFICO)-->
 
   <div class="right">
-    <h2>IoT</h2>
+    <h2>IOT</h2>
     <hr>
     <p>!! -- Site em construção -- !!</p>
-
-    <b>Selecione o sensor que deseja visualizar o gráfico.</b> <br>
+    <a href="grafico_premoldado.html"><button class="w3-btn w3-white w3-round w3-border w3-border-blue">Voltar
+        <b>←</b></button></a><br>
+    <br>
 
     <hr>
     <p><b>Professor orientador:</b></p>
@@ -183,6 +205,7 @@
   <script>
 
 
+
     // Initialize Firebase
     var config = {
       apiKey: "AIzaSyC41dwdLW5a19Vb-9OB7pOeDpFeW8Y952o",
@@ -196,6 +219,103 @@
 
 
 
+    //criacao do grafico
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function parse(temp) {
+      return (new Date(temp.replace(/-/g, '/'))).getTime()
+    }
+
+
+    function drawChart() {
+
+
+
+      firebase.database().ref("arquivopoeira").on('value', function (snapshot) {
+        var data2 = new google.visualization.DataTable();
+        data2.addColumn('string', 'hora');
+        data2.addColumn('number', 'PM 10');
+        data2.addColumn('number', 'PM 2,5');
+
+        //calculo media minuto
+        var minuto;
+        var soma10 = 0;
+        var soma25 = 0;
+        var contador = 0;
+        var media10 = [];
+        var media25 = [];
+        var mediahora = [];
+        var indice = 0;
+        var horaguardada;
+
+        PM10 = snapshot.child("Pm10").val();
+        PM25 = snapshot.child("Pm25").val();
+        hora = snapshot.child("hora").val();
+
+        var valpm10 = Object.values(PM10);
+        var valpm25 = Object.values(PM25);
+        var valhora = Object.values(hora);
+
+        novahora = valhora[0];
+        var um;
+        var dois;
+        um = novahora.indexOf(":");
+        dois = novahora.lastIndexOf(":");
+        horaguardada = novahora;
+        minuto = novahora.substring(um + 1, dois);
+
+        for (i = 0; i < valpm10.length - 1; i++) {
+
+          novahora = valhora[i];
+          var um;
+          var dois;
+          um = novahora.indexOf(":");
+          dois = novahora.lastIndexOf(":");
+
+          if (novahora.substring(um + 1, dois) != minuto) {
+            mediahora.push(horaguardada);
+            horaguardada = novahora;
+            minuto = novahora.substring(um + 1, dois);
+            media10.push(soma10 / contador);
+            media25.push(soma25 / contador);
+            contador = 0;
+            soma10 = 0;
+            soma25 = 0;
+            indice = indice + 1
+          }
+
+          soma10 = soma10 + valpm10[i];
+          soma25 = soma25 + valpm25[i];
+          contador = contador + 1;
+
+        }
+
+        //fim calculo media
+        console.log(media10);
+
+        for (i = 0; i < media10.length; i++) {
+
+          data2.addRows([
+            [mediahora[i], media10[i], media25[i]]
+
+          ]);
+        }
+
+        var options2 = {
+          chart: {
+            title: 'fdfsdfsdfsd',
+            subtitle: 'sdfdsfsdfdsf'
+          }
+
+        };
+        var chart2 = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart2.draw(data2, options2);
+
+      });
+    };
 
   </script>
 </body>
