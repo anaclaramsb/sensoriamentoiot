@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
   <!-- The Viewer CSS -->
   <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/style.min.css"
     type="text/css">
@@ -20,7 +20,9 @@
     * {
       box-sizing: border-box;
     }
-
+    #mapid { 
+      height: 180px; 
+      }
     .main {
       float: left;
       width: 75%;
@@ -128,8 +130,10 @@
 
   <div class="w3-cell-middle">
     <div class="main">
-      <h2>Gráficos</h2>
+      <h2>Gráficos - IBPC</h2>
       <div class="w3-panel w3-border w3-round-xlarge">
+          <br>
+          <div id="mapid"></div><br>
         <br>
      <center> 
       <a href="grafico_part.html"><img src="https://i.ibb.co/8jYshfH/poeira.png" alt="poeira" style="border: #65696A Solid 2px;" width="24%"></a> 
@@ -175,26 +179,28 @@
   </div>
 
 
-  <script src="js/jq.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript"></script>
-
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin="">
+  </script>
 
   <!-- Developer JS -->
   <script>
 
 
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyC41dwdLW5a19Vb-9OB7pOeDpFeW8Y952o",
-      authDomain: "monitoramento-de-obras.firebaseapp.com",
-      databaseURL: "https://monitoramento-de-obras.firebaseio.com",
-      projectId: "monitoramento-de-obras",
-      storageBucket: "monitoramento-de-obras.appspot.com",
-      messagingSenderId: "998746395462"
-    };
-    firebase.initializeApp(config);
+var mymap = L.map('mapid').setView([-12.876281, -38.423958], 14);
+var marker = L.marker([-12.876281, -38.423958]).addTo(mymap);
+
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+	maxZoom: 18,
+	id: 'mapbox.streets',
+	accessToken: 'pk.eyJ1IjoiYW5hY2xhcmFtc2IiLCJhIjoiY2p6c2Y5bG1jMDA2NjNtbXZ3cW1lcTExNSJ9.ySc9DnWePpoQ2T66q_ADnA'
+}).addTo(mymap);
+
+
 
 
 
