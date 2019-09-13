@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/style.min.css"
     type="text/css">
 
-  <!-- Developer CSS --> 
+  <!-- Developer CSS -->
   <style>
     * {
       box-sizing: border-box;
@@ -128,12 +128,14 @@
 
   <div class="w3-cell-middle">
     <div class="main">
-      <h2>Gráficos de material particulado</h2>
+      <h2>Gráficos para dias janeiro - TESTE</h2>
       <div class="w3-panel w3-border w3-round-xlarge">
+<br>
 
-
-
-
+       <center> 
+           Selecione a data desejada<br>
+           <input type="date" name="data" id="dateInput" /><br>
+       </center>
 
         <p>
           <div id="curve_chart" style="height:400px;" style="width:100%;"></div>
@@ -143,7 +145,7 @@
 
         <p>
           <div class="w3-panel w3-border w3-round-xlarge">
-            <center>Gráfico de material particulado em média por minuto do dia 10/07/2019
+            <center>Gráfico de TESTE dias de JANEIRO (só possui os 3 primeiro dias) </center>
           </div>
         </p><br>
 
@@ -195,7 +197,6 @@
   </div>
 
 
-  <script src="js/jq.js"></script>
   <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript"></script>
@@ -208,13 +209,13 @@
 
     // Initialize Firebase
     var config = {
-      apiKey: "AIzaSyC41dwdLW5a19Vb-9OB7pOeDpFeW8Y952o",
-      authDomain: "monitoramento-de-obras.firebaseapp.com",
-      databaseURL: "https://monitoramento-de-obras.firebaseio.com",
-      projectId: "monitoramento-de-obras",
-      storageBucket: "monitoramento-de-obras.appspot.com",
-      messagingSenderId: "998746395462"
-    };
+            apiKey: "AIzaSyA147EvBwFwladI1SD7FH55GjThY-eH4fo",
+            authDomain: "aplicativo-de-monitoramento.firebaseapp.com",
+            databaseURL: "https://aplicativo-de-monitoramento.firebaseio.com",
+            projectId: "aplicativo-de-monitoramento",
+            storageBucket: "aplicativo-de-monitoramento.appspot.com",
+            messagingSenderId: "914093515282",
+        };
     firebase.initializeApp(config);
 
 
@@ -231,77 +232,39 @@
 
     function drawChart() {
 
+        
 
-
-      firebase.database().ref("arquivopoeira").on('value', function (snapshot) {
-        var data2 = new google.visualization.DataTable();
+      firebase.database().ref("Teste").on('value', function (snapshot) {
+ 
+        
+        document.getElementById("dateInput").addEventListener("change", function() {
+            var data2 = new google.visualization.DataTable();
         data2.addColumn('string', 'hora');
         data2.addColumn('number', 'PM 10');
-        data2.addColumn('number', 'PM 2,5');
-
-        //calculo media minuto
-        var minuto;
-        var soma10 = 0;
-        var soma25 = 0;
-        var contador = 0;
-        var media10 = [];
-        var media25 = [];
-        var mediahora = [];
-        var indice = 0;
-        var horaguardada;
-
-        PM10 = snapshot.child("Pm10").val();
-        PM25 = snapshot.child("Pm25").val();
-        hora = snapshot.child("hora").val();
+        
+            var input = this.value;
+              mes = input.substring(5, 7);
+            dia = input.substring(8, 10);
+            console.log(mes); 
+            console.log(dia); 
+            console.log(input);//e.g. 2015-11-13
+        PM10 = snapshot.child(mes+"/"+dia+"/PM10").val();
+        hora = snapshot.child(mes+"/"+dia+"/hora").val();
 
         var valpm10 = Object.values(PM10);
-        var valpm25 = Object.values(PM25);
         var valhora = Object.values(hora);
 
-        novahora = valhora[0];
-        var um;
-        var dois;
-        um = novahora.indexOf(":");
-        dois = novahora.lastIndexOf(":");
-        horaguardada = novahora;
-        minuto = novahora.substring(um + 1, dois);
 
-        for (i = 0; i < valpm10.length - 1; i++) {
+                console.log(valpm10);
+                console.log(valhora);
 
-          novahora = valhora[i];
-          var um;
-          var dois;
-          um = novahora.indexOf(":");
-          dois = novahora.lastIndexOf(":");
+                for (i = 0; i < valhora.length; i++) {
 
-          if (novahora.substring(um + 1, dois) != minuto) {
-            mediahora.push(horaguardada);
-            horaguardada = novahora;
-            minuto = novahora.substring(um + 1, dois);
-            media10.push(soma10 / contador);
-            media25.push(soma25 / contador);
-            contador = 0;
-            soma10 = 0;
-            soma25 = 0;
-            indice = indice + 1
-          }
+                    data2.addRows([
+                        [valhora[i], valpm10[i]]
 
-          soma10 = soma10 + valpm10[i];
-          soma25 = soma25 + valpm25[i];
-          contador = contador + 1;
-
-        }
-
-        //fim calculo media
-        console.log(media10);
-
-        for (i = 0; i < media10.length; i++) {
-
-          data2.addRows([
-            [mediahora[i], media10[i], media25[i]]
-
-          ]);
-        }
+                    ]);
+                }
 
         var options2 = {
           chart: {
@@ -313,7 +276,8 @@
         var chart2 = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
         chart2.draw(data2, options2);
-
+    });
+      
       });
     };
 

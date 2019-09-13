@@ -21,10 +21,9 @@
       box-sizing: border-box;
     }
     #mapid { 
-      height: 500px; 
+      height: 180px; 
       }
     .main {
-      position: relative;
       float: left;
       width: 75%;
       padding: 20px;
@@ -39,7 +38,15 @@
       text-align: center;
     }
 
-    
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: black;
+      color: white;
+      text-align: center;
+    }
 
     @media only screen and (max-width:620px) {
 
@@ -123,17 +130,21 @@
 
   <div class="w3-cell-middle">
     <div class="main">
-      <h2>Gráficos</h2>
+      <h2>Gráficos - UFBA Escola Politécnica</h2>
       <div class="w3-panel w3-border w3-round-xlarge">
         <br>
-     <center> 
-       <h3> Obras e Fábricas </h3><br>
-       <a href="DolceVita/grafico_DolceVita.html">Dolce Vita</a><br>
-       <a href="PreMoldado/grafico_premoldado.html"> Pré-moldado IBPC</a><br>
-       <a href="ufba/ufba.html">ufba</a><br>
-       <br><br>
           <div id="mapid"></div><br>
-            </center>
+        <br>
+     <center> <a href="ufba_lumi.html"><img src="https://i.ibb.co/0CmPTj8/lumi.png" alt="lumi" style="border: #65696A Solid 2px;" width="24%"> 
+      <a href="ufba_poeira.html"><img src="https://i.ibb.co/8jYshfH/poeira.png" alt="poeira" style="border: #65696A Solid 2px;" width="24%"></a> 
+      <a href="ufba_temp.html"><img src="https://i.ibb.co/Gnqg6WY/temperatura.png" alt="temperatura" style="border: #65696A Solid 2px;" width="24%" > 
+      <a href="ufba_ruido.html"><img src="https://i.ibb.co/FDNqRTp/ruido.png" alt="ruido" style="border: #65696A Solid 2px;" width="24%"></a></center><br>
+      <center> <div style="border: #65696A Solid 2px; width: 24%; height: 10%; margin: 0;  display: inline-block; font-size: 80%">Luminosidade</div>
+        <div style="border: #65696A Solid 2px; width: 24%; height: 10%; margin: 0; display: inline-block; font-size: 85%">Particulado</div>
+        <div style="border: #65696A Solid 2px; width: 24%; height: 10%; margin: 0; display: inline-block; font-size: 85%">Temperatura</div>
+        <div style="border: #65696A Solid 2px; width: 24%; height: 10%; margin: 0;  display: inline-block; font-size: 85%">Ruído</div><br></center>
+        <br>
+        
             <br>
 
 
@@ -148,8 +159,9 @@
     <hr>
     <p>!! -- Site em construção -- !!</p>
 
-    <b>Selecione a obra ou fábrica que deseja visualizar.</b> <br>
-
+    <b>Selecione o sensor que deseja visualizar o gráfico.</b> <br><br>
+    <a href="/grafico.html"><button class="w3-btn w3-white w3-round w3-border w3-border-blue">Voltar
+      <b>←</b></button></a><br>
     <hr>
     <p><b>Professor orientador:</b></p>
     <p>Emerson de Andrade Ferreira</p>
@@ -177,42 +189,21 @@
   <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin="">
   </script>
 
-
   <!-- Developer JS -->
   <script>
-  
 
-    var map = L.map('mapid').setView([-12.9360,-38.4315], 12);
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+
+var mymap = L.map('mapid').setView([-12.999749, -38.510375], 15);
+var marker = L.marker([-12.999749, -38.510375]).addTo(mymap);
+
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 	attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 	maxZoom: 18,
 	id: 'mapbox.streets',
 	accessToken: 'pk.eyJ1IjoiYW5hY2xhcmFtc2IiLCJhIjoiY2p6c2Y5bG1jMDA2NjNtbXZ3cW1lcTExNSJ9.ySc9DnWePpoQ2T66q_ADnA'
-    }).addTo(map);
+}).addTo(mymap);
 
-
-    var points = [
-        ["P1", -12.876281, -38.423958, "/PreMoldado/grafico_premoldado.html"],
-        ["P2", -12.99629, -38.45161, "/DolceVita/grafico_DolceVita.html"],
-        ["P3", -12.999749, -38.510375, "/ufba/ufba.html"]
-    ];
-    var marker = [];
-    var i;
-    for (i = 0; i < points.length; i++) {
-        marker[i] = new L.Marker([points[i][1], points[i][2]], {
-            win_url: points[i][3]
-        });
-        marker[i].addTo(map);
-        marker[i].on('click', onClick);
-    };
-
-
-function onClick(e) {
-    //console.log(this.options.win_url);
-    window.open(this.options.win_url,"_self");
-}
-   
-
+marker.bindPopup("<b>Universidade Federal da Bahia</b><br>Escola Politécnica - DCE").openPopup();
 
 
   </script>
