@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- The Viewer CSS -->
+  <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/style.min.css"
+    type="text/css">
+
+  <!-- Developer CSS -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    .main {
+      float: left;
+      width: 80%;
+      padding: 20px;
+    }
+
+    .right {
+      background-color: #B9D2E1;
+      float: left;
+      width: 20%;
+      padding: 15px;
+      margin-top: 7px;
+      text-align: center;
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: black;
+      color: white;
+      text-align: center;
+    }
+
+    @media only screen and (max-width:620px) {
+
+      /* For mobile phones: */
+      .menu,
+      .main,
+      .right {
+        width: 100%;
+      }
+
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+    }
+
+    #MyViewerDiv {
+
+      position: relative;
+      width: 100%;
+      height: 450px;
+      background-color: #F0F8FF;
+    }
+
+    .my-custom-ui {
+      position: absolute;
+      top: 0.2;
+      left: 0.2;
+      z-index: 5;
+      margin: .3em;
+      padding: .3em;
+      font-size: 3em;
+      font-family: sans-serif;
+      background-color: rgba(255, 255, 255, 0);
+      border-radius: 2px;
+    }
+
+    .my-custom-ui span {
+      color: red;
+    }
+
+    .temperatura {
+      position: absolute;
+      top: 0.2;
+      left: 0.2;
+      z-index: 5;
+      margin: .3em;
+      padding: .3em;
+      font-size: 3vw;
+      font-family: sans-serif;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 8px;
+    }
+
+    .temperatura span {
+      color: red;
+    }
+  </style>
+</head>
+
+
+<!-- COMEÇO DA BARRA -->
+
+
+
+<body style="font-family:Verdana;color:#65696A;">
+  <div style="background-color:#B9D2E1;padding:8px;text-align:center;">
+    <h1>Sensoriamento IoT com Firebase</h1>
+  </div>
+  <div class="w3-bar w3-border w3-black">
+    <a href="/grafico.html" class="w3-bar-item w3-button w3-mobile w3-border-right">Gráficos</a>
+    <a href="/index.html" class="w3-bar-item w3-button w3-mobile w3-border-right">BIM</a>
+  </div>
+
+
+
+  <!-- COMEÇO DA PARTE MODIFICÁVEL -->
+
+  <!-- AQUI COMEÇA A PARTE DO MEIO DO LAYOUT (GRÁFICOS) -->
+
+  <div class="w3-cell-middle">
+    <div class="main">
+      <h2>Gráficos de Luminosidade</h2>
+      <div class="w3-panel w3-border w3-round-xlarge">
+<br>
+
+       <center> 
+           Selecione a data desejada<br>
+           <input type="date" name="data" id="dateInput" /> <button id="ir">Ir</button> <br>
+       </center>
+       
+        <p>
+          <div id="curve_chart" style="height:400px;" style="width:100%;"></div>
+        </p>
+
+
+
+        <p>
+          <div class="w3-panel w3-border w3-round-xlarge">
+            <center>Gráfico do sensor de luminosidade </center>
+          </div>
+        </p><br>
+
+        
+        <br>
+        <br>
+        <br>
+
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- AQUI COMEÇA A PARTE DA DIREITA DO LAYOUT (NAVEGAÇÃO DO GRÁFICO)-->
+
+  <div class="right">
+    <h2>IOT</h2>
+    <hr>
+    <p>!! -- Site em construção -- !!</p>
+    <a href="ufba.html"><button class="w3-btn w3-white w3-round w3-border w3-border-blue">Voltar
+        <b>←</b></button></a><br>
+    <br>
+
+    <hr>
+    <p><b>Professor orientador:</b></p>
+    <p>Emerson de Andrade Ferreira</p>
+    <br>
+    <p><b>Alunos:</b></p>
+    <p>Ana Clara Batista</p>
+    <p>Bruno Lima</p>
+    <p>Caroline Araujo</p>
+    <p>Leandro Cândido</p>
+
+
+    <hr>
+  </div>
+  <!-- FIM DA PARTE MODIFICÁVEL -->
+
+  <div class="footer">
+
+    <div style="padding:5px">© GETEC - UFBA www.ufba.br</div>
+  </div>
+
+
+  <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript"></script>
+
+
+  <!-- Developer JS -->
+  <script>
+
+
+
+    // Initialize Firebase
+    var config = {
+            apiKey: "AIzaSyA147EvBwFwladI1SD7FH55GjThY-eH4fo",
+            authDomain: "aplicativo-de-monitoramento.firebaseapp.com",
+            databaseURL: "https://aplicativo-de-monitoramento.firebaseio.com",
+            projectId: "aplicativo-de-monitoramento",
+            storageBucket: "aplicativo-de-monitoramento.appspot.com",
+            messagingSenderId: "914093515282",
+        };
+    firebase.initializeApp(config);
+
+
+
+    //criacao do grafico
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function parse(temp) {
+      return (new Date(temp.replace(/-/g, '/'))).getTime()
+    }
+
+
+    function drawChart() {
+
+        
+
+      firebase.database().ref("ufba").once('value', function (snapshot) {
+ 
+        
+        document.getElementById("ir").addEventListener("click", function() {
+          var input = document.getElementById("dateInput").value;
+            var data2 = new google.visualization.DataTable();
+        data2.addColumn('string', 'hora');
+        data2.addColumn('number', 'luminosidade');
+        
+            
+              mes = input.substring(5, 7);
+            dia = input.substring(8, 10);
+            console.log(mes); 
+            console.log(dia); 
+            console.log(input);//e.g. 2015-11-13
+        PM10 = snapshot.child(mes+"/"+dia+"/luminosidade").val();
+        hora = snapshot.child(mes+"/"+dia+"/hora").val();
+
+          if(PM10==null){
+            chart2 = 0;
+            document.getElementById('curve_chart').value='';
+            alert("Esse dia não possui dados. Por favor, escolha outro.");
+            
+          }
+        var valpm10 = Object.values(PM10);
+        var valhora = Object.values(hora);
+
+
+                console.log(valpm10);
+                console.log(valhora);
+
+                for (i = 0; i < valhora.length; i++) {
+
+                    data2.addRows([
+                        [valhora[i], valpm10[i]]
+
+
+                    ]);
+                }
+
+        var options2 = {
+          chart: {
+            title: 'fdfsdfsdfsd',
+            subtitle: 'sdfdsfsdfdsf'
+          }
+
+        };
+        var chart2 = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart2.draw(data2, options2);
+    });
+      
+      });
+
+      
+      firebase.database().ref("ufba").once('value', function (snapshot) {
+ 
+        
+        document.getElementById("ir").addEventListener("click", function() {
+          var input = document.getElementById("dateInput").value;
+            var data2 = new google.visualization.DataTable();
+            var data2 = new google.visualization.DataTable();
+        data2.addColumn('number', 'dia');
+        data2.addColumn('number', 'PM 10');
+        
+       //calculo media mes
+       var minuto;
+        var soma10 = 0;
+        var media10 = 0;
+        var media25 = [];
+        var mediahora = [];
+        var indice = 0;
+        var horaguardada;
+        var qtddias = 3;
+
+        for(i = 1; i < qtddias+1; i++){
+            if(i<10){
+            var caminho = "01/0" + i + "/PM10"
+        }
+        else{
+            var caminho = "01/" + i + "/PM10"
+        }
+            PM10 = snapshot.child(caminho).val();
+            console.log(caminho);
+            var valpm10 = Object.values(PM10);
+            for(j=0; j< valpm10.length; j++){
+            soma10 = soma10 + valpm10[i];
+            }
+            media10 = soma10/valpm10.length;
+            data2.addRows([
+            [i, media10]
+
+          ]);
+        }
+
+
+        var options2 = {
+          chart: {
+            title: 'fdfsdfsdfsd',
+            subtitle: 'sdfdsfsdfdsf'
+          }
+
+        };
+        var chart2 = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart2.draw(data2, options2);
+    });
+      
+      });
+    };
+
+  </script>
+</body>
+
+</html>
